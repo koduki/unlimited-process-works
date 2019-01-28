@@ -1,19 +1,30 @@
 require 'sqlite3'
+require 'pg'
+require 'securerandom'
 
 user = ENV['u']
 
 case ENV['action']
-when 'add' then
+when 'create' then
+    sql = <<'EOS'
+        CREATE TABLE IF NOT EXISTS account (
+        id UUID,
+        amount BIGINT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (id)
+        );
+EOS
+
     db = SQLite3::Database.new("/data/#{user}.db")
-    db.execute('CREATE TABLE IF NOT EXISTS ACCOUNT (MONEY INTEGER)')
-    db.execute('INSERT INTO ACCOUNT (MONEY) VALUES(0)')
+    db.execute(sql)
     db.close
 
     puts "Hello, #{user}. Welcome Unlimited World!"
 when 'show' then
     money = nil
     db = SQLite3::Database.new("/data/#{user}.db")
-    db.execute("SELECT MONEY FROM ACCOUNT") do |row|
+    db.execute("SELECT SUM(amount) FROM account") do |row|
         money=row.first
     end
     db.close
@@ -21,11 +32,26 @@ when 'show' then
     puts "#{user}'s account is #{money} yen."
 when 'deposit' then
     arg = ENV['arg']
-    money = arg
+    amount = arg
+
+    id = SecureRandom.uuid
 
     db = SQLite3::Database.new("/data/#{user}.db")
-    db.execute("UPDATE ACCOUNT SET MONEY=MONEY+#{money}")
+    db.execute("INSERT INTO ACCOUNT (id, amount) VALUES('#{id}', #{amount})")
     db.close
 
-    puts "#{user}'s account deposit #{money} yen."
+    Thread.new do 
+        con = PG::connect(:host => "global-db", :user => "postgres", :password => "mysecretpassword")
+        result = con.exec("INSERT INTO ACCOUNT (id, name, amount) VALUES('#{id}', '#{user}', #{amount})")
+        con.finish
+    end
+    puts "#{user}'s account deposit #{amount} yen."
+
+when 'account_summary' then
+    con = PG::connect(:host => "global-db", :user => "postgres", :password => "mysecretpassword")
+    result = con.exec("SELECT name, sum FROM v_account_summary;")
+    result.each do |r|
+        puts "#{r['name']}, #{r['sum']}"
+    end
+    con.finish
 end

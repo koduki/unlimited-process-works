@@ -1,6 +1,6 @@
 FROM ruby:2.6.0-alpine
 
-RUN apk update && apk upgrade && apk add sqlite-dev alpine-sdk
+RUN apk update && apk upgrade && apk add alpine-sdk sqlite-dev postgresql-dev
 
 WORKDIR /app
 COPY Gemfile .

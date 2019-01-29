@@ -9,6 +9,6 @@ cd $WORKDIR/dispatcher
 pwd
 docker build -t koduki/disp .
 
-cd $WORKDIR/app
+cd $WORKDIR/worker
 pwd
 docker build -t koduki/worker .

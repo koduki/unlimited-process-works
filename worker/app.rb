@@ -42,11 +42,12 @@ when 'deposit' then
     db.execute("INSERT INTO ACCOUNT (id, amount) VALUES('#{id}', #{amount})")
     db.close
 
-    Thread.new do 
+    #Thread.new do 
         con = PG::connect(:host => "global-db", :user => "postgres", :password => "mysecretpassword")
-        result = con.exec("INSERT INTO ACCOUNT (id, name, amount) VALUES('#{id}', '#{user}', #{amount})")
+        con.exec("INSERT INTO ACCOUNT (id, name, amount) VALUES('#{id}', '#{user}', #{amount})")
+        con.exec("REFRESH MATERIALIZED VIEW v_account_summary")
         con.finish
-    end
+    #end
     puts "#{user}'s account deposit #{amount} yen."
 
 when 'account_summary' then

@@ -8,6 +8,10 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
     privileged: true
+  aetl:
+    image: koduki/aetl
+    ports:
+      - "8080:8080"
   global-db:
     image: postgres:11
     ports:

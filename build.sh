@@ -12,3 +12,7 @@ docker build -t koduki/disp .
 cd $WORKDIR/worker
 pwd
 docker build -t koduki/worker .
+
+cd $WORKDIR/aetl
+pwd
+docker build -t koduki/aetl .

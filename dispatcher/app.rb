@@ -2,7 +2,7 @@ require 'sinatra'
 
 def exec(action, params)
     env = params.map{|x|"-e #{x} "}.join
-    response = IO.popen("docker run --network unlimted-process-works_default -e action=#{action} #{env} -v /tmp/data:/data koduki/worker", "r+") {|io| 
+    response = IO.popen("docker run --network unlimited-process-works_default -e action=#{action} #{env} -v /tmp/data:/data koduki/worker", "r+") {|io| 
         io.each_line.map{|l|l}.join 
     }
     response

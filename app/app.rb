@@ -21,6 +21,7 @@ EOS
     db.close
 
     puts "Hello, #{user}. Welcome Unlimited World!"
+
 when 'show' then
     money = nil
     db = SQLite3::Database.new("/data/#{user}.db")
@@ -30,6 +31,7 @@ when 'show' then
     db.close
 
     puts "#{user}'s account is #{money} yen."
+
 when 'deposit' then
     arg = ENV['arg']
     amount = arg

@@ -14,3 +14,9 @@ services:
       - "5432:5432"
     environment:
       - POSTGRES_PASSWORD=mysecretpassword
+    tty: true
+    restart: always
+    user: root
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/postgresql/data

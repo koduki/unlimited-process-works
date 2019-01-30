@@ -20,7 +20,7 @@ EOS
     db.execute(sql)
     db.close
 
-    puts "Hello, #{user}. Welcome Unlimited World!"
+    puts "Hello, #{user}. Welcome Unlimited Process Works!"
 
 when 'show' then
     money = nil
